@@ -1,6 +1,4 @@
 /**
- * 
- * This is to check 
  * This is Dashboard.js
  * In this file we are going to import Two others File i.e. List.js and Listcomponents.js
  * List.js - This file is used to display the List of TO-DO
