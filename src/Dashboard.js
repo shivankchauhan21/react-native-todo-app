@@ -7,14 +7,19 @@
  * ***********************************************************************
  */
 
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
   FlatList,
   StyleSheet,
   TouchableOpacity,
+  Button,
+  TextInput,
+  Alert,
+  ActionSheetIOS,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //Importing Two components to dashboard whic we are going to render according to user................
 import List from './List';
@@ -29,85 +34,94 @@ const Dashboard = () => {
   //Use to store id for clicked object helps in openeing the clicked component.............
   const [ID, setID] = useState(0);
 
+  const [HEADING, setHEADING] = useState('');
+  const [CONTENT, setCONTENT] = useState('');
+
   //Data stores and array of object in state for our To-Do List /.....................
-  const [DATA, setData] = useState([
-    {
-      id: 1,
-      heading: 'Heading 1',
-      content: 'Content 1',
-    },
-    {
-      id: 2,
-      heading: 'Heading 2',
-      content: 'Content 2',
-    },
-    {
-      id: 3,
-      heading: 'Heading 3',
-      content: 'Content 3',
-    },
-    {
-      id: 4,
-      heading: 'Heading 4',
-      content: 'Content 4',
-    },
-    {
-      id: 5,
-      heading: 'Heading 5',
-      content: 'Content 5',
-    },
-    {
-      id: 6,
-      heading: 'Heading 6',
-      content: 'Content 6',
-    },
-  ]);
+  const [DATA, setData] = useState([]);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    saveData(DATA);
+  },[DATA]);
+
+  //to add all todo to DATA state.........
+  const saveData = async (DATA) => {
+    await AsyncStorage.setItem('localData', JSON.stringify(DATA));
+  };
+
+  const loadData = async () => {
+    const tempData = await AsyncStorage.getItem('localData');
+    if (DATA != null) setData(JSON.parse(tempData));
+  };
 
   //This function work to delete the object from an array i.e. DATA
-  const deleteFromTODO = (id) => {
-    let newArray = DATA.filter(function (el){
-      if(el.id !== id)
-        return el;
+  const deleteFromTODO = id => {
+    let newArray = DATA.filter(function (el) {
+      if (el.id !== id) return el;
     });
     setData(newArray);
-
-    
+  };
+  const addTodo = async () => {
+    //If information is not entered the data will not save............
+    if (HEADING == '') {
+      Alert.alert('Enter Heading');
+    } else if (CONTENT == '') {
+      Alert.alert('Enter Content');
+    } else {
+      const obj = {
+        id: DATA.length + 1,
+        heading: HEADING,
+        content: CONTENT,
+      };
+      setData([...DATA, obj]);
+      setHEADING('');
+      setCONTENT('');
+    }
   };
 
   //This function is called when we have Status = 0
   //Opens ListComponent Component to display selected ToDo.
   //A touchable used to delete and go back(setStatus = 1)
-  const callListComponent = ({item}) => {
-    if(item.id == ID)
-    return (
-     <View>
-      <ListComponent heading={item.heading} content={item.content}/>
-      <TouchableOpacity onPress={()=> {
-        setStatus(1);
-        deleteFromTODO(item.id);
-        }}>
-      <Text style={styles.right}>Delete</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => {setStatus(1)}}>
-      <Text style={styles.right}>Back</Text>
-      </TouchableOpacity>
-     </View>
-    )
+  const callListComponent = ({ item }) => {
+    if (item.id == ID)
+      return (
+        <View>
+          <ListComponent heading={item.heading} content={item.content} />
+          <TouchableOpacity
+            onPress={() => {
+              setStatus(1);
+              deleteFromTODO(item.id);
+            }}>
+            <Text style={styles.right}>Delete</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setStatus(1);
+            }}>
+            <Text style={styles.right}>Back</Text>
+          </TouchableOpacity>
+        </View>
+      );
   };
 
   //RenderItem for FlatList ....................
   //Returning list.js Component and a touchable used to setStatus = 0................
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <View>
         <View>
           <List heading={item.heading} content={item.content} />
         </View>
-        <TouchableOpacity onPress={() => 
-          {setID(item.id);
+        <TouchableOpacity
+          onPress={() => {
+            setID(item.id);
             setStatus(0);
           }}>
-          <Text style={styles.right}>Click Me</Text>
+          <Text style={styles.right}>View</Text>
         </TouchableOpacity>
       </View>
     );
@@ -118,11 +132,38 @@ const Dashboard = () => {
     <View>
       {Status ? (
         <View>
+          <View>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Heading"
+              onChangeText={e => setHEADING(e)}></TextInput>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter TO-DO"
+              onChangeText={e => setCONTENT(e)}></TextInput>
+            <View style={{ margin: 10 }}>
+              <Button
+                title="setData"
+                onPress={() => {
+                  addTodo();
+                }}
+              />
+            </View>
+          </View>
           <FlatList
             data={DATA}
             renderItem={renderItem}
             keyExtractor={item => item.id}
           />
+          <View>
+            {DATA.length == 0 ? (
+              <View>
+                <Text style={styles.empty}>ToDo is Empty Please enter a value</Text>
+              </View>
+            ) : (
+              <View></View>
+            )}
+          </View>
         </View>
       ) : (
         <View>
@@ -146,8 +187,9 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
-    borderColor: 'red',
+    borderColor: 'white',
     borderWidth: 1,
+
   },
   text: {
     padding: 5,
@@ -159,7 +201,35 @@ const styles = StyleSheet.create({
     padding: 5,
     backgroundColor: 'green',
   },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+    borderColor:'white',
+    color:'white',
+    borderRadius:20,
+    textAlign:'center'
+  },
+  empty:{
+    margin:40,
+    textAlign:'center',
+    fontSize:30,
+    borderRadius:10,
+    borderColor : "white",
+    borderWidth:2,
+    padding:10
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: 'black',
+  },
 });
 
-// Exporting Dashboard 
+// Exporting Dashboard
 export default Dashboard;

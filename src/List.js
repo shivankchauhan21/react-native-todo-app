@@ -6,16 +6,14 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
-
-
-const List = (prop) => {
-    return(
-        <View style={styles.items}>
-            <Text style={styles.text}>{prop.heading}</Text>
-            <Text style={styles.text}>{prop.content}</Text>
-        </View>
-    );
-  };
+const List = prop => {
+  return (
+    <View style={styles.items}>
+      <Text style={styles.text}>{prop.heading}</Text>
+      <Text style={styles.text}>{prop.content}</Text>
+    </View>
+  );
+};
 //Styling List.js..................
 const styles = StyleSheet.create({
   container: {
@@ -28,9 +26,9 @@ const styles = StyleSheet.create({
     borderColor: 'red',
     borderWidth: 1,
   },
-  text:{
-    padding:5
-  }
+  text: {
+    padding: 5,
+  },
 });
 
 export default List;
