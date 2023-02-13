@@ -17,17 +17,17 @@ import {
   Button,
   TextInput,
   Alert,
-  ActionSheetIOS,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //Importing Two components to dashboard whic we are going to render according to user................
 import List from './List';
 import ListComponent from './ListComponent';
-import ListComponents from './ListComponent';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 //Main Functional Component........................
-const Dashboard = () => {
+const Dashboard = ({ navigation, route }) => {
   //Usestate to switch between components (0 = ListComponent and 1 = List)  .......
   const [Status, setStatus] = useState(1);
 
@@ -40,13 +40,20 @@ const Dashboard = () => {
   //Data stores and array of object in state for our To-Do List /.....................
   const [DATA, setData] = useState([]);
 
+  const stack = createNativeStackNavigator();
+
   useEffect(() => {
     loadData();
   }, []);
 
   useEffect(() => {
     saveData(DATA);
-  },[DATA]);
+  }, [DATA]);
+
+  useEffect(()=>{
+    if(route.params?.deleteid)
+    checkIfDeleted(route.params.deleteid);
+  },[route.params?.deleteid]);
 
   //to add all todo to DATA state.........
   const saveData = async (DATA) => {
@@ -63,8 +70,13 @@ const Dashboard = () => {
     let newArray = DATA.filter(function (el) {
       if (el.id !== id) return el;
     });
+    route.params.deleteid = null;
     setData(newArray);
   };
+  checkIfDeleted = (check) => {
+    if (check != null)
+      deleteFromTODO(Number(check));
+  }
   const addTodo = async () => {
     //If information is not entered the data will not save............
     if (HEADING == '') {
@@ -83,54 +95,35 @@ const Dashboard = () => {
     }
   };
 
-  //This function is called when we have Status = 0
-  //Opens ListComponent Component to display selected ToDo.
-  //A touchable used to delete and go back(setStatus = 1)
-  const callListComponent = ({ item }) => {
-    if (item.id == ID)
-      return (
-        <View>
-          <ListComponent heading={item.heading} content={item.content} />
-          <TouchableOpacity
-            onPress={() => {
-              setStatus(1);
-              deleteFromTODO(item.id);
-            }}>
-            <Text style={styles.right}>Delete</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setStatus(1);
-            }}>
-            <Text style={styles.right}>Back</Text>
-          </TouchableOpacity>
-        </View>
-      );
-  };
-
   //RenderItem for FlatList ....................
   //Returning list.js Component and a touchable used to setStatus = 0................
   const renderItem = ({ item }) => {
     return (
       <View>
         <View>
-          <List heading={item.heading} content={item.content} />
+          {/* <List heading={item.heading} content={item.content} /> */}
+          <Text style={styles.text}>{item.heading}</Text>
+          <Text style={styles.text}>{item.content}</Text>
         </View>
         <TouchableOpacity
           onPress={() => {
-            setID(item.id);
-            setStatus(0);
+            // setID(item.id);
+            // setStatus(0);
+            navigation.navigate('todo', {
+              id: item.id,
+              heading: item.heading,
+              content: item.content,
+            });
+            
           }}>
           <Text style={styles.right}>View</Text>
         </TouchableOpacity>
       </View>
     );
   };
-
   //Returning the value of main functional component......................
   return (
-    <View>
-      {Status ? (
+    <View style={styles.container}>
         <View>
           <View>
             <TextInput
@@ -165,15 +158,7 @@ const Dashboard = () => {
             )}
           </View>
         </View>
-      ) : (
-        <View>
-          <FlatList
-            data={DATA}
-            renderItem={callListComponent}
-            keyExtractor={item => item.id}
-          />
-        </View>
-      )}
+
     </View>
   );
 };
@@ -182,6 +167,7 @@ const Dashboard = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'black'
   },
   items: {
     padding: 20,
@@ -206,19 +192,19 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
-    borderColor:'white',
-    color:'white',
-    borderRadius:20,
-    textAlign:'center'
+    borderColor: 'white',
+    color: 'white',
+    borderRadius: 20,
+    textAlign: 'center'
   },
-  empty:{
-    margin:40,
-    textAlign:'center',
-    fontSize:30,
-    borderRadius:10,
-    borderColor : "white",
-    borderWidth:2,
-    padding:10
+  empty: {
+    margin: 40,
+    textAlign: 'center',
+    fontSize: 30,
+    borderRadius: 10,
+    borderColor: "white",
+    borderWidth: 2,
+    padding: 10
   },
   button: {
     alignItems: 'center',

@@ -1,57 +1,30 @@
-// import { View, Text, Button, StyleSheet, TextInput } from 'react-native'
-// // import {AsyncStorage} from 'react-native';
-// import React, { useState } from 'react'
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import React from 'react';
+import { View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// export default function App() {
-//   const [name, setname] = useState('hi');
-//   const setData = () => {
-//     AsyncStorage.setItem("name", name);
-//     // console.log("tData");
-//   }
-//   const getData = async ()=> {
-//     const name1 = await AsyncStorage.getItem("name");
-//     // Alert.alert("name1");
-//     console.log(name1);
-//   }
-//   return (
-//     <View>
-     
-//       <View style={{ margin: 20 }}>
-//         <Button title='setData' onPress={() => setData()} />
-//       </View> 
-//       <View style={{ margin: 20 }}>
-//         <Button title='viewData' onPress={() => getData()} />
-//       </View>
-//     </View>
-//   )
-// }
-// const styles = StyleSheet.create({
-  // input: {
-  //   height: 40,
-  //   margin: 12,
-  //   borderWidth: 1,
-  //   padding: 10,
-  // },
-// });
-
-
-
-
-
-
-import React, {Component} from 'react';
-import {
-  Text,
-  View,
-} from 'react-native';
+import Home from './src/Home';
 import Dashboard from './src/Dashboard';
+import ListComponent from './src/ListComponent';
+import { Test } from './src/Test';
 
-const App = () =>{
-  return(
-    <View> 
-      <Dashboard/>
-    </View>
+const App = () => {
+  const stack = createNativeStackNavigator();
+  return (
+    //Displaying Dashboard..................
+    // <View>
+    //   <Dashboard />
+    // </View>
+
+    //Using Navigation to reach Home page...............
+    <NavigationContainer>
+      <stack.Navigator initialRouteName="Dashboard">
+        <stack.Screen name='Dashboard' component={Dashboard}/>
+        <stack.Screen name="Home" component={Home} />
+        <stack.Screen name='Test' component={Test}/>
+        <stack.Screen name='todo' component={ListComponent}/>
+        </stack.Navigator>
+    </NavigationContainer>
   );
-}; 
+};
 export default App;
