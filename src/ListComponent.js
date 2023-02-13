@@ -3,20 +3,33 @@
  * Imported by Dashboard..
  */
 
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Alert, Button} from 'react-native';
 
-const ListComponent = prop => {
+const ListComponent = ({route}) => {
+  const navigation = useNavigation();
+  const {heading,content} = route.params;
+  const {id} = route.params;
+
   return (
-    <View style={styles.items}>
-      <Text style={styles.text}>{prop.heading}</Text>
-      <Text style={styles.text}>{prop.content}</Text>
+    <View style={styles.container}>
+      <Text style={styles.text}>heading : {JSON.stringify(heading)}</Text>
+      <Text style={styles.text}>content : {JSON.stringify(content)}</Text>
+      <Button title='Delete' onPress={()=>{
+        navigation.navigate({
+          name:'Dashboard',
+          params:{deleteid : JSON.stringify(id)}
+        })
+      }}/>
+      <Button title='Back' onPress={()=>navigation.goBack()}/>
     </View>
   );
 };
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:'black'
   },
   items: {
     padding: 20,
@@ -27,6 +40,7 @@ const styles = StyleSheet.create({
   },
   text: {
     padding: 5,
+    color:'white'
   },
 });
 
