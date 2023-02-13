@@ -50,10 +50,10 @@ const Dashboard = ({ navigation, route }) => {
     saveData(DATA);
   }, [DATA]);
 
-  useEffect(()=>{
-    if(route.params?.deleteid)
-    checkIfDeleted(route.params.deleteid);
-  },[route.params?.deleteid]);
+  useEffect(() => {
+    if (route.params?.deleteid)
+      checkIfDeleted(route.params.deleteid);
+  }, [route.params?.deleteid]);
 
   //to add all todo to DATA state.........
   const saveData = async (DATA) => {
@@ -114,7 +114,7 @@ const Dashboard = ({ navigation, route }) => {
               heading: item.heading,
               content: item.content,
             });
-            
+
           }}>
           <Text style={styles.right}>View</Text>
         </TouchableOpacity>
@@ -124,40 +124,40 @@ const Dashboard = ({ navigation, route }) => {
   //Returning the value of main functional component......................
   return (
     <View style={styles.container}>
+      <View>
         <View>
-          <View>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Heading"
-              onChangeText={e => setHEADING(e)}></TextInput>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter TO-DO"
-              onChangeText={e => setCONTENT(e)}></TextInput>
-            <View style={{ margin: 10 }}>
-              <Button
-                title="setData"
-                onPress={() => {
-                  addTodo();
-                }}
-              />
-            </View>
-          </View>
-          <FlatList
-            data={DATA}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-          />
-          <View>
-            {DATA.length == 0 ? (
-              <View>
-                <Text style={styles.empty}>ToDo is Empty Please enter a value</Text>
-              </View>
-            ) : (
-              <View></View>
-            )}
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Heading"
+            onChangeText={e => setHEADING(e)}></TextInput>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter TO-DO"
+            onChangeText={e => setCONTENT(e)}></TextInput>
+          <View style={{ margin: 10 }}>
+            <Button
+              title="setData"
+              onPress={() => {
+                addTodo();
+              }}
+            />
           </View>
         </View>
+        <FlatList
+          data={DATA}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+        />
+        <View>
+          {DATA.length == 0 ? (
+            <View>
+              <Text style={styles.empty}>ToDo is Empty Please enter a value</Text>
+            </View>
+          ) : (
+            <View></View>
+          )}
+        </View>
+      </View>
 
     </View>
   );
