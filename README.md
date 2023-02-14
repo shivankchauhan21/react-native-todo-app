@@ -1,13 +1,29 @@
 # To-Do Using React Native
+Here we had build an todo application using React Native.
 
-In this project we have App.tsx which is the main file and import the component (./src/Dashboard.js).
-## Dashboard.js 
+## App.js 
+App.js contain all the screens on which we have to navigate.
 
-Dashboard.js is is the file which we are going to see on the screen, it import List.js and Component.js (./___).\
-We used the concept of Conditional Rendering to render Two files on screen using useState.
+## Dashboard.js
+Dashboard.js conatain the main part.
+It is responsible for displaying the data and adding the todo to our application.
+Whenever we click on any of the todo we navigate to ListComponent.js.
 
-## List.js 
-This is responsible to display the To-Do list on the screen.
+## ListComponent.js
+Listcomponent.js is responsible for displaying the data recieved from Dashboard.js and have the ability to perform deletion on that todo.
 
-## ListComponent.js 
-This is responsible to display the clicked item in To-Do list.
+## Features.
+* This application have the ability to navigate to other pages.
+* We can add todo to the application.
+* We can delete them.
+* It uses asyncStorage which help us to store data in local storage.
+
+## Knowledge Gained
+* Components.
+* React native components.
+* Hooks.
+* Props.
+* Lifecycle.
+* CSS Styling.
+* Async Storage. 
+* Navigation.
