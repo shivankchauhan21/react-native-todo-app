@@ -7,7 +7,7 @@
  * ***********************************************************************
  */
 
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
@@ -21,13 +21,13 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //Importing Two components to dashboard whic we are going to render according to user................
-import List from './List';
-import ListComponent from './ListComponent';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+// import List from './List';
+// import ListComponent from './ListComponent';
+// import {NavigationContainer, useNavigation} from '@react-navigation/native';
+// import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 //Main Functional Component........................
-const Dashboard = ({ navigation, route }) => {
+const Dashboard = ({navigation, route}) => {
   //Usestate to switch between components (0 = ListComponent and 1 = List)  .......
   const [Status, setStatus] = useState(1);
 
@@ -51,12 +51,11 @@ const Dashboard = ({ navigation, route }) => {
   }, [DATA]);
 
   useEffect(() => {
-    if (route.params?.deleteid)
-      checkIfDeleted(route.params.deleteid);
+    if (route.params?.deleteid) checkIfDeleted(route.params.deleteid);
   }, [route.params?.deleteid]);
 
   //to add all todo to DATA state.........
-  const saveData = async (DATA) => {
+  const saveData = async DATA => {
     await AsyncStorage.setItem('localData', JSON.stringify(DATA));
   };
 
@@ -73,10 +72,9 @@ const Dashboard = ({ navigation, route }) => {
     route.params.deleteid = null;
     setData(newArray);
   };
-  checkIfDeleted = (check) => {
-    if (check != null)
-      deleteFromTODO(Number(check));
-  }
+  checkIfDeleted = check => {
+    if (check != null) deleteFromTODO(Number(check));
+  };
   const addTodo = async () => {
     //If information is not entered the data will not save............
     if (HEADING == '') {
@@ -97,7 +95,7 @@ const Dashboard = ({ navigation, route }) => {
 
   //RenderItem for FlatList ....................
   //Returning list.js Component and a touchable used to setStatus = 0................
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     return (
       <View>
         <View>
@@ -114,7 +112,6 @@ const Dashboard = ({ navigation, route }) => {
               heading: item.heading,
               content: item.content,
             });
-
           }}>
           <Text style={styles.right}>View</Text>
         </TouchableOpacity>
@@ -134,7 +131,7 @@ const Dashboard = ({ navigation, route }) => {
             style={styles.input}
             placeholder="Enter TO-DO"
             onChangeText={e => setCONTENT(e)}></TextInput>
-          <View style={{ margin: 10 }}>
+          <View style={{margin: 10}}>
             <Button
               title="setData"
               onPress={() => {
@@ -151,14 +148,15 @@ const Dashboard = ({ navigation, route }) => {
         <View>
           {DATA.length == 0 ? (
             <View>
-              <Text style={styles.empty}>ToDo is Empty Please enter a value</Text>
+              <Text style={styles.empty}>
+                ToDo is Empty Please enter a value
+              </Text>
             </View>
           ) : (
             <View></View>
           )}
         </View>
       </View>
-
     </View>
   );
 };
@@ -167,7 +165,7 @@ const Dashboard = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black'
+    backgroundColor: 'black',
   },
   items: {
     padding: 20,
@@ -175,7 +173,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     borderColor: 'white',
     borderWidth: 1,
-
   },
   text: {
     padding: 5,
@@ -195,16 +192,16 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     color: 'white',
     borderRadius: 20,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   empty: {
     margin: 40,
     textAlign: 'center',
     fontSize: 30,
     borderRadius: 10,
-    borderColor: "white",
+    borderColor: 'white',
     borderWidth: 2,
-    padding: 10
+    padding: 10,
   },
   button: {
     alignItems: 'center',
